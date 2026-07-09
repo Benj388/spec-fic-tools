@@ -69,7 +69,7 @@
             padding: 20px;
             margin-top: 20px;
             border-left: 5px solid var(--fire);
-            display: none; /* Hidden until triggered */
+            display: none; 
         }
 
         .cascade-step h3 { margin-top: 0; color: var(--fire); font-size: 1.1rem; }
@@ -90,7 +90,7 @@
     
     <hr style="border-color: #333; margin-bottom: 25px;">
 
-    <!-- PART A: The Pillar Dropdown -->
+    <!-- 1. Select Pillar -->
     <div class="form-group">
         <label for="pillar">1. Select your Inquiry Pillar:</label>
         <select id="pillar">
@@ -101,98 +101,158 @@
         </select>
     </div>
 
-    <!-- PART B: The Core Premise Selector -->
+    <!-- 2. Select Premise -->
     <div class="form-group">
         <label for="what-if-select">2. Choose a "What If...?" Premise (or select Custom):</label>
         <select id="what-if-select" onchange="toggleCustomInput()">
             <option value="">-- Select a prompt to start --</option>
-            <!-- Innovation Prompts -->
             <option value="What if a massive solar flare permanently wiped out all digital payments overnight?"> [Innovation] What if a massive solar flare permanently wiped out all digital payments?</option>
             <option value="What if AI took over all automated public transport in Singapore?"> [Innovation] What if AI took over all automated public transport?</option>
-            <!-- Livability Prompts -->
             <option value="What if Singapore implemented a strict policy where every citizen had a personal carbon quota?"> [Livability] What if citizens had a strict personal carbon quota?</option>
-            <!-- Culture Prompts -->
             <option value="What if the next generation communicated entirely through digital holograms and abandoned spoken language?"> [Culture] What if the next generation completely abandoned spoken language?</option>
-            <!-- Identity Prompts -->
             <option value="What if a citizen's online social credit score legally determined their career path?"> [Identity] What if an online social credit score determined your career path?</option>
-            <!-- Custom Choice -->
             <option value="CUSTOM">✍️ Write my own custom "What If?"...</option>
         </select>
     </div>
 
-    <!-- PART C: Hidden Custom Text Input (Only shows if "CUSTOM" is picked above) -->
+    <!-- Custom Field Container -->
     <div class="form-group" id="custom-input-container" style="display: none;">
         <label for="what-if-custom" style="color: var(--fire);">Type your custom "What If...?" question:</label>
         <input type="text" id="what-if-custom" placeholder="e.g., What if trees could communicate with our smartphones?">
     </div>
 
-    <!-- The Trigger Button -->
     <button onclick="startCascade()">Trace the Ripples</button>
 
-    <!-- Step 2: The Cascade Output Elements -->
+    <!-- Cascade Steps Layout -->
     <div id="step1" class="cascade-step">
         <h3>⚡ Immediate Ripple (First 24 Hours)</h3>
         <p>What breaks first? Who is immediately inconvenienced, panicked, or affected? Consider these angles:</p>
-        
-        <!-- DYNAMIC HINTS WILL INJECT HERE -->
-        <ul id="ripple-hints" style="line-height: 1.6; margin-bottom: 20px; color: #555; padding-left: 20px;"></ul>
-        
-        <input type="text" id="ripple1" placeholder="Type your observation here...">
+        <ul id="ripple-hints" style="line-height: 1.6; margin-bottom: 20px; color: #333; padding-left: 20px;"></ul>
+        <input type="text" id="ripple1" placeholder="Type your immediate impact observations here...">
         <button style="margin-top:10px; padding: 5px 10px; font-size:0.8rem;" onclick="revealNext('step2')">Next Level</button>
     </div>
 
     <div id="step2" class="cascade-step">
-        <h3>eyeball 🏛️ Societal Ripple (5 Years Later)</h3>
-        <p>How does the government, infrastructure, or laws shift to adapt to this new normal?</p>
-        <input type="text" id="ripple2" placeholder="e.g., A massive underground barter market forms; physical cash becomes a rare luxury asset...">
+        <h3>🏛️ Societal Ripple (5 Years Later)</h3>
+        <p>How does the government, infrastructure, environment, or legal system adapt to this new reality?</p>
+        <ul id="ripple2-hints" style="line-height: 1.6; margin-bottom: 20px; color: #333; padding-left: 20px;"></ul>
+        <input type="text" id="ripple2" placeholder="Type your long-term macro changes here...">
         <button style="margin-top:10px; padding: 5px 10px; font-size:0.8rem;" onclick="revealNext('step3')">Next Level</button>
     </div>
 
     <div id="step3" class="cascade-step">
         <h3>👤 The Human Story (Your Character's Conflict)</h3>
-        <p>Introduce a person living here. What normal, everyday thing are they trying to do that is now incredibly difficult?</p>
-        <input type="text" id="ripple3" placeholder="e.g., A teenager tries to secretly buy a forbidden physical book using illegal coins...">
+        <p>Introduce an individual who lives in this setting. What normal, everyday thing are they trying to achieve?</p>
+        <ul id="ripple3-hints" style="line-height: 1.6; margin-bottom: 20px; color: #333; padding-left: 20px;"></ul>
+        <input type="text" id="ripple3" placeholder="Type your character-focused story setup here...">
     </div>
 
     <button id="export-btn" onclick="exportToJournal()">💾 Export to Inquiry Journal</button>
 </div>
 
 <script>
-    // 1. Database of starting hints mapped to the dropdown option positions (indices)
     const hintDatabase = {
-        1: [ // Solar Flare
-            "<strong>Daily Logistics:</strong> Commuters stuck at train stations unable to scan phone tickets or access digital wallets.",
-            "<strong>Commerce Panic:</strong> Hawker stalls and supermarkets unable to make sales, leading to cash hoarding.",
-            "<strong>Communication:</strong> Sudden isolation as friends and family lose instant messaging networks."
-        ],
-        2: [ // AI Public Transport
-            "<strong>The Workforce:</strong> Thousands of veteran bus captains and train operators locked out of work overnight.",
-            "<strong>System Glitch:</strong> A massive system freeze gridlocks the central district during morning rush hour.",
-            "<strong>Public Anxiety:</strong> Passengers feel deeply uneasy entering driverless cabins with no emergency staff onboard."
-        ],
-        3: [ // Carbon Quota
-            "<strong>Air Conditioning Bans:</strong> Households rationing power, turning off air-con on a scorching 34°C Singapore day.",
-            "<strong>The Food Dash:</strong> High-carbon imported foods (like beef) skyrocketing in price, causing a run on local greens.",
-            "<strong>The App Tracking:</strong> Citizens constantly refreshing their quota tracker app in panic before ordering a private hire ride."
-        ],
-        4: [ // Hologram Communication
-            "<strong>Family Silence:</strong> Dinner tables completely silent as teens communicate via gestures and eye-tracking menus.",
-            "<strong>School Crisis:</strong> Traditional classrooms descending into chaos because teachers can't get students to speak out loud.",
-            "<strong>The Tech Gap:</strong> Elderly citizens feeling entirely cut off from the younger generation's unspoken world."
-        ],
-        5: [ // Social Credit Score
-            "<strong>The Job Freeze:</strong> A student with a low online rating instantly denied entry to their dream university course.",
-            "<strong>Polite Paranoia:</strong> People acting artificially nice or overly cautious in public to avoid getting downvoted by strangers.",
-            "<strong>The Outcasts:</strong> A sudden new class of 'offline' citizens who can no longer rent apartments or book flights."
-        ],
-        "CUSTOM": [ // Custom choice or fallback
-            "<strong>Infrastructure:</strong> What physical system or tech network breaks down first?",
-            "<strong>Human Reaction:</strong> What is the immediate emotional response of people on the street (panic, relief, confusion)?",
-            "<strong>First Conflict:</strong> What everyday task (buying food, commuting, talking) becomes an instant struggle?"
-        ]
+        1: {
+            step1: [
+                "<strong>Daily Logistics:</strong> Commuters stuck at train stations unable to scan phone tickets or access digital wallets.",
+                "<strong>Commerce Panic:</strong> Hawker stalls and supermarkets unable to make sales, leading to cash hoarding.",
+                "<strong>Communication:</strong> Sudden isolation as friends and family lose instant messaging networks."
+            ],
+            step2: [
+                "<strong>New Infrastructure:</strong> How does the state rapidly issue emergency physical vouchers or hard currency?",
+                "<strong>Economic Shift:</strong> Do ancient forms of commerce return? (e.g., bartering physical goods, gold, or favors)",
+                "<strong>The 'Unplugged' Privilege:</strong> Do communities that rejected technology suddenly become the most stable or powerful?"
+            ],
+            step3: [
+                "<strong>The Generation Gap:</strong> Introduce a character who has literally never touched physical paper money or a coin in their life.",
+                "<strong>The Daily Struggle:</strong> What basic item (medicine, clean water, transit pass) are they trying to buy via the black market?",
+                "<strong>The Stakes:</strong> What happens if the vintage, physical asset they try to trade is revealed to be a counterfeit?"
+            ]
+        },
+        2: {
+            step1: [
+                "<strong>The Workforce:</strong> Thousands of veteran bus captains and train operators locked out of work overnight.",
+                "<strong>System Glitch:</strong> A massive system freeze gridlocks the central district during morning rush hour.",
+                "<strong>Public Anxiety:</strong> Passengers feel deeply uneasy entering driverless cabins with no emergency staff onboard."
+            ],
+            step2: [
+                "<strong>Urban Architecture:</strong> Do roads transform to favor massive automated logistics routes, removing pedestrian walkways?",
+                "<strong>The Algorithmic Divide:</strong> Does the routing AI prioritize transport for wealthy zones, leaving lower-income blocks isolated?",
+                "<strong>Surveillance State:</strong> Because the network monitors every passenger's face, does standard transport double as a legal trap?"
+            ],
+            step3: [
+                "<strong>A Displaced Rebel:</strong> Focus on a former human bus captain who runs an illegal, human-driven vehicle in secret corridors.",
+                "<strong>The Objective:</strong> They need to transport someone across the grid without triggering the overhead AI sensors.",
+                "<strong>The Conflict:</strong> The automated system detects a 'human anomaly' on the road and locks down the sector."
+            ]
+        },
+        3: {
+            step1: [
+                "<strong>Air Conditioning Bans:</strong> Households rationing power, turning off air-con on a scorching 34°C Singapore day.",
+                "<strong>The Food Dash:</strong> High-carbon imported foods (like beef) skyrocketing in price, causing a run on local greens.",
+                "<strong>The App Tracking:</strong> Citizens constantly refreshing their quota tracker app in panic before ordering a private hire ride."
+            ],
+            step2: [
+                "<strong>Social Stratification:</strong> Does a black market emerge where the wealthy buy up the unused carbon allowances of the poor?",
+                "<strong>Eco-Enforcement:</strong> Do specialized municipal wardens monitor domestic household waste and utility metrics like detective squads?",
+                "<strong>Cultural Shift:</strong> Does high consumption become a massive public taboo, where flashing wealth is seen as a social crime?"
+            ],
+            step3: [
+                "<strong>The Family Dilemma:</strong> A teenager wants to organize a traditional, energy-heavy birthday dinner for a frail grandparent.",
+                "<strong>The Hurdle:</strong> Doing so will completely deplete the family's shared grid allowance for the rest of the rainy monsoon month.",
+                "<strong>The Choice:</strong> They must decide whether to hack the neighborhood meter box or sacrifice the milestone celebration."
+            ]
+        },
+        4: {
+            step1: [
+                "<strong>Family Silence:</strong> Dinner tables completely silent as teens communicate via gestures and eye-tracking menus.",
+                "<strong>School Crisis:</strong> Traditional classrooms descending into chaos because teachers can't get students to speak out loud.",
+                "<strong>The Tech Gap:</strong> Elderly citizens feeling entirely cut off from the younger generation's unspoken world."
+            ],
+            step2: [
+                "<strong>Language Shift:</strong> Does traditional spoken language become a 'dead' historical artifact only studied by academics?",
+                "<strong>Digital Censorship:</strong> If communication runs through corporate holographic apps, can the state filter certain words visually?",
+                "<strong>Physical Space:</strong> Do public libraries, plazas, and spaces shift from noise-filled centers to dead-silent rooms?"
+            ],
+            step3: [
+                "<strong>The Last Speaker:</strong> A teenager discovers they possess a rare physical vocal cord condition that makes digital tracking sync fail.",
+                "<strong>The Discovery:</strong> They meet an elderly mentor who teaches them the lost art of vocal, unmonitored human speech.",
+                "<strong>The Danger:</strong> Speaking aloud out in the public square triggers automated acoustic security alerts designed to flag noise pollution."
+            ]
+        },
+        5: {
+            step1: [
+                "<strong>The Job Freeze:</strong> A student with a low online rating instantly denied entry to their dream university course.",
+                "<strong>Polite Paranoia:</strong> People acting artificially nice or overly cautious in public to avoid getting downvoted by strangers.",
+                "<strong>The Outcasts:</strong> A sudden new class of 'offline' citizens who can no longer rent apartments or book flights."
+            ],
+            step2: [
+                "<strong>The Reputation Economy:</strong> Do rating brokers open storefronts, offering to clean up your score using bot farms for a massive fee?",
+                "<strong>Architectural Barriers:</strong> Do premium malls, residential estates, and parks install scanners that bar anyone rated below a 4.5?",
+                "<strong>Echo Chambers:</strong> Do family structures fracture because keeping a low-rated relative in your house lowers your own score?"
+            ],
+            step3: [
+                "<strong>The Slip-Up:</strong> A high-achieving student accidentally leaves a critical, cynical public comment on an official portal.",
+                "<strong>The Countdown:</strong> They watch their score plunge in real-time, losing access to their transit pass mid-commute.",
+                "<strong>The Target:</strong> They have exactly two hours to complete a series of highly degrading public service acts to rescue their profile."
+            ]
+        },
+        "CUSTOM": {
+            step1: [
+                "<strong>Infrastructure:</strong> What physical network or societal convenience instantly breaks down?",
+                "<strong>Human Reaction:</strong> What is the panic response of average people walking on the street?"
+            ],
+            step2: [
+                "<strong>Control:</strong> How does the government, police, or corporate entities shift rules to handle this reality?",
+                "<strong>The New Normal:</strong> What becomes highly valuable, rare, or illegal in this changed world?"
+            ],
+            step3: [
+                "<strong>Character Focus:</strong> Who is a regular person caught in this system? What everyday goal is now a major chore?",
+                "<strong>The Spark:</strong> What choice or secret puts them directly at odds with the rules?"
+            ]
+        }
     };
 
-    // Shows the custom text box if they select the "Write my own" option
     function toggleCustomInput() {
         const selectBox = document.getElementById('what-if-select');
         const customContainer = document.getElementById('custom-input-container');
@@ -221,30 +281,52 @@
             return;
         }
 
-        // Get the chosen index (0 is the placeholder, 1 is Solar Flare, etc.)
         const chosenIndex = selectBox.selectedIndex;
-
-        // Inject the hints into the list based on index number
         const hintList = document.getElementById('ripple-hints');
-        hintList.innerHTML = ""; // Clear old hints
+        hintList.innerHTML = ""; 
         
-        // Pick the hints array using the index, fall back to "CUSTOM" if it's the custom option
-        const currentHints = hintDatabase[chosenIndex] || hintDatabase["CUSTOM"];
+        const data = hintDatabase[chosenIndex] || hintDatabase["CUSTOM"];
         
-        currentHints.forEach(hint => {
+        data.step1.forEach(hint => {
             const li = document.createElement('li');
             li.innerHTML = hint;
             li.style.marginBottom = "10px";
             hintList.appendChild(li);
         });
 
-        // Reveal the first step
+        // Clear any leftover hints from previous runs in later steps
+        document.getElementById('ripple2-hints').innerHTML = "";
+        document.getElementById('ripple3-hints').innerHTML = "";
+
         document.getElementById('step1').style.display = 'block';
         document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Your existing function to show subsequent panels sequentially
     function revealNext(stepId) {
+        const selectBox = document.getElementById('what-if-select');
+        const chosenIndex = selectBox.selectedIndex;
+        const data = hintDatabase[chosenIndex] || hintDatabase["CUSTOM"];
+
+        if (stepId === 'step2') {
+            const list2 = document.getElementById('ripple2-hints');
+            list2.innerHTML = ""; // Ensure fresh start
+            data.step2.forEach(hint => {
+                const li = document.createElement('li');
+                li.innerHTML = hint;
+                li.style.marginBottom = "10px";
+                list2.appendChild(li);
+            });
+        } else if (stepId === 'step3') {
+            const list3 = document.getElementById('ripple3-hints');
+            list3.innerHTML = ""; // Ensure fresh start
+            data.step3.forEach(hint => {
+                const li = document.createElement('li');
+                li.innerHTML = hint;
+                li.style.marginBottom = "10px";
+                list3.appendChild(li);
+            });
+        }
+
         document.getElementById(stepId).style.display = 'block';
         document.getElementById(stepId).scrollIntoView({ behavior: 'smooth' });
         
