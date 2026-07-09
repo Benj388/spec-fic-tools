@@ -132,8 +132,12 @@
     <!-- Step 2: The Cascade Output Elements -->
     <div id="step1" class="cascade-step">
         <h3>⚡ Immediate Ripple (First 24 Hours)</h3>
-        <p>What breaks first? Who is immediately inconvenienced or panicked?</p>
-        <input type="text" id="ripple1" placeholder="e.g., Street vendors can't make sales; elderly citizens are locked out of buying groceries...">
+        <p>What breaks first? Who is immediately inconvenienced, panicked, or affected? Consider these angles:</p>
+        
+        <!-- DYNAMIC HINTS WILL INJECT HERE -->
+        <ul id="ripple-hints" style="line-height: 1.6; margin-bottom: 20px; color: #555; padding-left: 20px;"></ul>
+        
+        <input type="text" id="ripple1" placeholder="Type your observation here...">
         <button style="margin-top:10px; padding: 5px 10px; font-size:0.8rem;" onclick="revealNext('step2')">Next Level</button>
     </div>
 
@@ -174,13 +178,68 @@
         return selectBox.value;
     }
 
+    // Database of starting hints based on the chosen premise
+    const hintDatabase = {
+        "SOLAR_FLARE": [
+            "<strong>Daily Logistics:</strong> Commuters stuck at train stations unable to scan phone tickets or access digital wallets.",
+            "<strong>Commerce Panic:</strong> Hawker stalls and supermarkets unable to make sales, leading to cash hoarding.",
+            "<strong>Communication:</strong> Sudden isolation as friends and family lose instant messaging networks."
+        ],
+        "AI_TRANS": [
+            "<strong>The Workforce:</strong> Thousands of veteran bus captains and train operators locked out of work overnight.",
+            "<strong>System Glitch:</strong> A massive system freeze gridlocks the central district during morning rush hour.",
+            "<strong>Public Anxiety:</strong> Passengers feel deeply uneasy entering driverless cabins with no emergency staff onboard."
+        ],
+        "CARBON": [
+            "<strong>Air Conditioning Bans:</strong> Households rationing power, turning off air-con on a scorching 34°C Singapore day.",
+            "<strong>The Food Dash:</strong> High-carbon imported foods (like beef) skyrocketing in price, causing a run on local greens.",
+            "<strong>The App Tracking:</strong> Citizens constantly refreshing their quota tracker app in panic before ordering a private hire ride."
+        ],
+        "HOLOGRAM": [
+            "<strong>Family Silence:</strong> Dinner tables completely silent as teens communicate via gestures and eye-tracking menus.",
+            "<strong>School Crisis:</strong> Traditional classrooms descending into chaos because teachers can't get students to speak out loud.",
+            "<strong>The Tech Gap:</strong> Elderly citizens feeling entirely cut off from the younger generation's unspoken world."
+        ],
+        "SOCIAL_CREDIT": [
+            "<strong>The Job Freeze:</strong> A student with a low online rating instantly denied entry to their dream university course.",
+            "<strong>Polite Paranoia:</strong> People acting artificially nice or overly cautious in public to avoid getting downvoted by strangers.",
+            "<strong>The Outcasts:</strong> A sudden new class of 'offline' citizens who can no longer rent apartments or book flights."
+        ],
+        "CUSTOM": [
+            "<strong>Infrastructure:</strong> What physical system or tech network breaks down first?",
+            "<strong>Human Reaction:</strong> What is the immediate emotional response of people on the street (panic, relief, confusion)?",
+            "<strong>First Conflict:</strong> What everyday task (buying food, commuting, talking) becomes an instant struggle?"
+        ]
+    };
+
     function startCascade() {
+        const selectBox = document.getElementById('what-if-select');
         const premise = getSelectedPremise();
         
         if (!premise) {
             alert("Please select a prompt or type your own custom 'What If' question first!");
             return;
         }
+
+        // Determine which hint key to use
+        let hintKey = "CUSTOM";
+        if (selectBox.value.includes("solar flare")) hintKey = "SOLAR_FLARE";
+        else if (selectBox.value.includes("AI took over")) hintKey = "AI_TRANS";
+        else if (selectBox.value.includes("carbon quota")) hintKey = "CARBON";
+        else if (selectBox.value.includes("holograms")) hintKey = "HOLOGRAM";
+        else if (selectBox.value.includes("social credit")) hintKey = "SOCIAL_CREDIT";
+
+        // Inject the hints into the list
+        const hintList = document.getElementById('ripple-hints');
+        hintList.innerHTML = ""; // Clear old hints
+        
+        hintDatabase[hintKey].forEach(hint => {
+            const li = document.createElement('li');
+            li.innerHTML = hint;
+            li.style.marginBottom = "10px";
+            hintList.appendChild(li);
+        });
+
         // Reveal the first step
         document.getElementById('step1').style.display = 'block';
         document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
