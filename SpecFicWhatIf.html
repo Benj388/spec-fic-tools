@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speculative Fiction: The "What If" Cascade</title>
+    <style>
+        :root {
+            --bg: #121212;
+            --paper: #f5ebd6;
+            --fire: #d9383a;
+            --ink: #1f2421;
+            --accent: #2a9d8f;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--paper);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 800px;
+            background: #1a1a1a;
+            border: 2px solid var(--fire);
+            padding: 30px;
+            box-shadow: 5px 5px 0px var(--fire);
+        }
+
+        h1 { color: var(--fire); margin-top: 0; font-size: 1.8rem; text-transform: uppercase; }
+        p { line-height: 1.6; color: #ccc; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--accent); }
+        
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: var(--fire);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+        button:hover { background: #b32d2f; }
+
+        .cascade-step {
+            background: var(--paper);
+            color: var(--ink);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid var(--fire);
+            display: none; /* Hidden until triggered */
+        }
+
+        .cascade-step h3 { margin-top: 0; color: var(--fire); font-size: 1.1rem; }
+
+        #export-btn {
+            background: var(--accent);
+            margin-top: 20px;
+            display: none;
+        }
+        #export-btn:hover { background: #218276; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <h1>The "What If...?" Cascade Tracker</h1>
+    <p>Speculative fiction maps alternate realities by tracing how one change ripples through a society. Let's build your story's foundation.</p>
+    
+    <hr style="border-color: #333; margin-bottom: 25px;">
+
+    <!-- Step 1: Input -->
+    <div class="form-group">
+        <label for="pillar">1. Select your Inquiry Pillar:</label>
+        <select id="pillar">
+            <option value="Innovation">Innovation (e.g., tech, infrastructure, banning/going offline)</option>
+            <option value="Livability">Livability (e.g., policies, environment, city management)</option>
+            <option value="Culture">Culture (e.g., traditions, generational shifts)</option>
+            <option value="Identity">Identity (e.g., government rules, personal freedoms)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="what-if">2. Enter your "What If...?" Premise:</label>
+        <input type="text" id="what-if" placeholder="e.g., What if cashless payments were banned overnight?">
+    </div>
+
+    <button onclick="startCascade()">Trace the Ripples</button>
+
+    <!-- Step 2: The Cascade Output Elements -->
+    <div id="step1" class="cascade-step">
+        <h3>⚡ Immediate Ripple (First 24 Hours)</h3>
+        <p>What breaks first? Who is immediately inconvenienced or panicked?</p>
+        <input type="text" id="ripple1" placeholder="e.g., Street vendors can't make sales; elderly citizens are locked out of buying groceries...">
+        <button style="margin-top:10px; padding: 5px 10px; font-size:0.8rem;" onclick="revealNext('step2')">Next Level</button>
+    </div>
+
+    <div id="step2" class="cascade-step">
+        <h3>eyeball 🏛️ Societal Ripple (5 Years Later)</h3>
+        <p>How does the government, infrastructure, or laws shift to adapt to this new normal?</p>
+        <input type="text" id="ripple2" placeholder="e.g., A massive underground barter market forms; physical cash becomes a rare luxury asset...">
+        <button style="margin-top:10px; padding: 5px 10px; font-size:0.8rem;" onclick="revealNext('step3')">Next Level</button>
+    </div>
+
+    <div id="step3" class="cascade-step">
+        <h3>👤 The Human Story (Your Character's Conflict)</h3>
+        <p>Introduce a person living here. What normal, everyday thing are they trying to do that is now incredibly difficult?</p>
+        <input type="text" id="ripple3" placeholder="e.g., A teenager tries to secretly buy a forbidden physical book using illegal coins...">
+    </div>
+
+    <button id="export-btn" onclick="exportToJournal()">💾 Export to Inquiry Journal</button>
+</div>
+
+<script>
+    function startCascade() {
+        const premise = document.getElementById('what-if').value.trim();
+        if (!premise) {
+            alert("Please type a 'What If' question first!");
+            return;
+        }
+        // Reveal the first step
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function revealNext(stepId) {
+        document.getElementById(stepId).style.display = 'block';
+        document.getElementById(stepId).scrollIntoView({ behavior: 'smooth' });
+        
+        // If we reached the final step, show the export button
+        if (stepId === 'step3') {
+            document.getElementById('export-btn').style.display = 'block';
+        }
+    }
+
+    function exportToJournal() {
+        const pillar = document.getElementById('pillar').value;
+        const premise = document.getElementById('what-if').value;
+        const r1 = document.getElementById('ripple1').value;
+        const r2 = document.getElementById('ripple2').value;
+        const r3 = document.getElementById('ripple3').value;
+
+        const outputText = `SPECULATIVE FICTION BRAINSTORM\n` +
+                           `==============================\n` +
+                           `Inquiry Pillar: ${pillar}\n` +
+                           `Core "What If?" Question: ${premise}\n\n` +
+                           `[IMMEDIATE IMPACT]: ${r1}\n\n` +
+                           `[SOCIETAL RIPPLE]: ${r2}\n\n` +
+                           `[HUMAN-SCALE STORY]: ${r3}\n\n` +
+                           `Generated on: ${new Date().toLocaleDateString()}`;
+
+        const blob = new Blob([outputText], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        
+        a.href = url;
+        a.download = `SpecFic_Inquiry_${pillar}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+</body>
+</html>
