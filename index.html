@@ -90,7 +90,7 @@
     
     <hr style="border-color: #333; margin-bottom: 25px;">
 
-    <!-- Step 1: Input -->
+    <!-- PART A: The Pillar Dropdown -->
     <div class="form-group">
         <label for="pillar">1. Select your Inquiry Pillar:</label>
         <select id="pillar">
@@ -101,7 +101,7 @@
         </select>
     </div>
 
-    <!-- New Step 2: Dropdown + Custom Input Option -->
+    <!-- PART B: The Core Premise Selector -->
     <div class="form-group">
         <label for="what-if-select">2. Choose a "What If...?" Premise (or select Custom):</label>
         <select id="what-if-select" onchange="toggleCustomInput()">
@@ -120,12 +120,13 @@
         </select>
     </div>
 
-    <!-- Hidden by default, shows up if they select Custom -->
+    <!-- PART C: Hidden Custom Text Input (Only shows if "CUSTOM" is picked above) -->
     <div class="form-group" id="custom-input-container" style="display: none;">
         <label for="what-if-custom" style="color: var(--fire);">Type your custom "What If...?" question:</label>
         <input type="text" id="what-if-custom" placeholder="e.g., What if trees could communicate with our smartphones?">
     </div>
 
+    <!-- The Trigger Button -->
     <button onclick="startCascade()">Trace the Ripples</button>
 
     <!-- Step 2: The Cascade Output Elements -->
