@@ -158,6 +158,40 @@
 </div>
 
 <script>
+    // 1. Database of starting hints mapped to the dropdown option positions (indices)
+    const hintDatabase = {
+        1: [ // Solar Flare
+            "<strong>Daily Logistics:</strong> Commuters stuck at train stations unable to scan phone tickets or access digital wallets.",
+            "<strong>Commerce Panic:</strong> Hawker stalls and supermarkets unable to make sales, leading to cash hoarding.",
+            "<strong>Communication:</strong> Sudden isolation as friends and family lose instant messaging networks."
+        ],
+        2: [ // AI Public Transport
+            "<strong>The Workforce:</strong> Thousands of veteran bus captains and train operators locked out of work overnight.",
+            "<strong>System Glitch:</strong> A massive system freeze gridlocks the central district during morning rush hour.",
+            "<strong>Public Anxiety:</strong> Passengers feel deeply uneasy entering driverless cabins with no emergency staff onboard."
+        ],
+        3: [ // Carbon Quota
+            "<strong>Air Conditioning Bans:</strong> Households rationing power, turning off air-con on a scorching 34°C Singapore day.",
+            "<strong>The Food Dash:</strong> High-carbon imported foods (like beef) skyrocketing in price, causing a run on local greens.",
+            "<strong>The App Tracking:</strong> Citizens constantly refreshing their quota tracker app in panic before ordering a private hire ride."
+        ],
+        4: [ // Hologram Communication
+            "<strong>Family Silence:</strong> Dinner tables completely silent as teens communicate via gestures and eye-tracking menus.",
+            "<strong>School Crisis:</strong> Traditional classrooms descending into chaos because teachers can't get students to speak out loud.",
+            "<strong>The Tech Gap:</strong> Elderly citizens feeling entirely cut off from the younger generation's unspoken world."
+        ],
+        5: [ // Social Credit Score
+            "<strong>The Job Freeze:</strong> A student with a low online rating instantly denied entry to their dream university course.",
+            "<strong>Polite Paranoia:</strong> People acting artificially nice or overly cautious in public to avoid getting downvoted by strangers.",
+            "<strong>The Outcasts:</strong> A sudden new class of 'offline' citizens who can no longer rent apartments or book flights."
+        ],
+        "CUSTOM": [ // Custom choice or fallback
+            "<strong>Infrastructure:</strong> What physical system or tech network breaks down first?",
+            "<strong>Human Reaction:</strong> What is the immediate emotional response of people on the street (panic, relief, confusion)?",
+            "<strong>First Conflict:</strong> What everyday task (buying food, commuting, talking) becomes an instant struggle?"
+        ]
+    };
+
     // Shows the custom text box if they select the "Write my own" option
     function toggleCustomInput() {
         const selectBox = document.getElementById('what-if-select');
@@ -178,40 +212,6 @@
         return selectBox.value;
     }
 
-    // Database of starting hints based on the chosen premise
-    const hintDatabase = {
-        "SOLAR_FLARE": [
-            "<strong>Daily Logistics:</strong> Commuters stuck at train stations unable to scan phone tickets or access digital wallets.",
-            "<strong>Commerce Panic:</strong> Hawker stalls and supermarkets unable to make sales, leading to cash hoarding.",
-            "<strong>Communication:</strong> Sudden isolation as friends and family lose instant messaging networks."
-        ],
-        "AI_TRANS": [
-            "<strong>The Workforce:</strong> Thousands of veteran bus captains and train operators locked out of work overnight.",
-            "<strong>System Glitch:</strong> A massive system freeze gridlocks the central district during morning rush hour.",
-            "<strong>Public Anxiety:</strong> Passengers feel deeply uneasy entering driverless cabins with no emergency staff onboard."
-        ],
-        "CARBON": [
-            "<strong>Air Conditioning Bans:</strong> Households rationing power, turning off air-con on a scorching 34°C Singapore day.",
-            "<strong>The Food Dash:</strong> High-carbon imported foods (like beef) skyrocketing in price, causing a run on local greens.",
-            "<strong>The App Tracking:</strong> Citizens constantly refreshing their quota tracker app in panic before ordering a private hire ride."
-        ],
-        "HOLOGRAM": [
-            "<strong>Family Silence:</strong> Dinner tables completely silent as teens communicate via gestures and eye-tracking menus.",
-            "<strong>School Crisis:</strong> Traditional classrooms descending into chaos because teachers can't get students to speak out loud.",
-            "<strong>The Tech Gap:</strong> Elderly citizens feeling entirely cut off from the younger generation's unspoken world."
-        ],
-        "SOCIAL_CREDIT": [
-            "<strong>The Job Freeze:</strong> A student with a low online rating instantly denied entry to their dream university course.",
-            "<strong>Polite Paranoia:</strong> People acting artificially nice or overly cautious in public to avoid getting downvoted by strangers.",
-            "<strong>The Outcasts:</strong> A sudden new class of 'offline' citizens who can no longer rent apartments or book flights."
-        ],
-        "CUSTOM": [
-            "<strong>Infrastructure:</strong> What physical system or tech network breaks down first?",
-            "<strong>Human Reaction:</strong> What is the immediate emotional response of people on the street (panic, relief, confusion)?",
-            "<strong>First Conflict:</strong> What everyday task (buying food, commuting, talking) becomes an instant struggle?"
-        ]
-    };
-
     function startCascade() {
         const selectBox = document.getElementById('what-if-select');
         const premise = getSelectedPremise();
@@ -221,19 +221,17 @@
             return;
         }
 
-        // Determine which hint key to use
-        let hintKey = "CUSTOM";
-        if (selectBox.value.includes("solar flare")) hintKey = "SOLAR_FLARE";
-        else if (selectBox.value.includes("AI took over")) hintKey = "AI_TRANS";
-        else if (selectBox.value.includes("carbon quota")) hintKey = "CARBON";
-        else if (selectBox.value.includes("holograms")) hintKey = "HOLOGRAM";
-        else if (selectBox.value.includes("social credit")) hintKey = "SOCIAL_CREDIT";
+        // Get the chosen index (0 is the placeholder, 1 is Solar Flare, etc.)
+        const chosenIndex = selectBox.selectedIndex;
 
-        // Inject the hints into the list
+        // Inject the hints into the list based on index number
         const hintList = document.getElementById('ripple-hints');
         hintList.innerHTML = ""; // Clear old hints
         
-        hintDatabase[hintKey].forEach(hint => {
+        // Pick the hints array using the index, fall back to "CUSTOM" if it's the custom option
+        const currentHints = hintDatabase[chosenIndex] || hintDatabase["CUSTOM"];
+        
+        currentHints.forEach(hint => {
             const li = document.createElement('li');
             li.innerHTML = hint;
             li.style.marginBottom = "10px";
@@ -245,6 +243,7 @@
         document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
     }
 
+    // Your existing function to show subsequent panels sequentially
     function revealNext(stepId) {
         document.getElementById(stepId).style.display = 'block';
         document.getElementById(stepId).scrollIntoView({ behavior: 'smooth' });
@@ -256,7 +255,7 @@
 
     function exportToJournal() {
         const pillar = document.getElementById('pillar').value;
-        const premise = getSelectedPremise(); // Fetches whichever one they used
+        const premise = getSelectedPremise(); 
         const r1 = document.getElementById('ripple1').value;
         const r2 = document.getElementById('ripple2').value;
         const r3 = document.getElementById('ripple3').value;
