@@ -101,9 +101,29 @@
         </select>
     </div>
 
+    <!-- New Step 2: Dropdown + Custom Input Option -->
     <div class="form-group">
-        <label for="what-if">2. Enter your "What If...?" Premise:</label>
-        <input type="text" id="what-if" placeholder="e.g., What if cashless payments were banned overnight?">
+        <label for="what-if-select">2. Choose a "What If...?" Premise (or select Custom):</label>
+        <select id="what-if-select" onchange="toggleCustomInput()">
+            <option value="">-- Select a prompt to start --</option>
+            <!-- Innovation Prompts -->
+            <option value="What if a massive solar flare permanently wiped out all digital payments overnight?"> [Innovation] What if a massive solar flare permanently wiped out all digital payments?</option>
+            <option value="What if AI took over all automated public transport in Singapore?"> [Innovation] What if AI took over all automated public transport?</option>
+            <!-- Livability Prompts -->
+            <option value="What if Singapore implemented a strict policy where every citizen had a personal carbon quota?"> [Livability] What if citizens had a strict personal carbon quota?</option>
+            <!-- Culture Prompts -->
+            <option value="What if the next generation communicated entirely through digital holograms and abandoned spoken language?"> [Culture] What if the next generation completely abandoned spoken language?</option>
+            <!-- Identity Prompts -->
+            <option value="What if a citizen's online social credit score legally determined their career path?"> [Identity] What if an online social credit score determined your career path?</option>
+            <!-- Custom Choice -->
+            <option value="CUSTOM">✍️ Write my own custom "What If?"...</option>
+        </select>
+    </div>
+
+    <!-- Hidden by default, shows up if they select Custom -->
+    <div class="form-group" id="custom-input-container" style="display: none;">
+        <label for="what-if-custom" style="color: var(--fire);">Type your custom "What If...?" question:</label>
+        <input type="text" id="what-if-custom" placeholder="e.g., What if trees could communicate with our smartphones?">
     </div>
 
     <button onclick="startCascade()">Trace the Ripples</button>
@@ -133,10 +153,31 @@
 </div>
 
 <script>
+    // Shows the custom text box if they select the "Write my own" option
+    function toggleCustomInput() {
+        const selectBox = document.getElementById('what-if-select');
+        const customContainer = document.getElementById('custom-input-container');
+        
+        if (selectBox.value === "CUSTOM") {
+            customContainer.style.display = 'block';
+        } else {
+            customContainer.style.display = 'none';
+        }
+    }
+
+    function getSelectedPremise() {
+        const selectBox = document.getElementById('what-if-select');
+        if (selectBox.value === "CUSTOM") {
+            return document.getElementById('what-if-custom').value.trim();
+        }
+        return selectBox.value;
+    }
+
     function startCascade() {
-        const premise = document.getElementById('what-if').value.trim();
+        const premise = getSelectedPremise();
+        
         if (!premise) {
-            alert("Please type a 'What If' question first!");
+            alert("Please select a prompt or type your own custom 'What If' question first!");
             return;
         }
         // Reveal the first step
@@ -148,7 +189,6 @@
         document.getElementById(stepId).style.display = 'block';
         document.getElementById(stepId).scrollIntoView({ behavior: 'smooth' });
         
-        // If we reached the final step, show the export button
         if (stepId === 'step3') {
             document.getElementById('export-btn').style.display = 'block';
         }
@@ -156,7 +196,7 @@
 
     function exportToJournal() {
         const pillar = document.getElementById('pillar').value;
-        const premise = document.getElementById('what-if').value;
+        const premise = getSelectedPremise(); // Fetches whichever one they used
         const r1 = document.getElementById('ripple1').value;
         const r2 = document.getElementById('ripple2').value;
         const r3 = document.getElementById('ripple3').value;
