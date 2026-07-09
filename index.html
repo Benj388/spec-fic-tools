@@ -87,7 +87,24 @@
 <div id="app-container">
     <h1>The "What If...?" Cascade Tracker</h1>
     <p>Speculative fiction maps alternate realities by tracing how one change ripples through a society. Let's build your story's foundation.</p>
-    
+    <!-- ADD THIS ACCORDION BUTTON AND BOX -->
+    <button id="toggle-sample-btn" onclick="toggleSampleBox()" style="background: var(--accent); font-size: 0.85rem; padding: 8px 16px; margin-bottom: 20px;">
+        💡 View Model Student Sample (High-Detail Target)
+    </button>
+
+    <div id="model-sample-box" style="display: none; background: #222; border: 1px dashed var(--accent); padding: 20px; margin-bottom: 25px; border-left: 5px solid var(--accent);">
+        <h4 style="margin-top: 0; color: var(--accent); text-transform: uppercase; letter-spacing: 1px;">📋 Model Inquiry Journal Entry</h4>
+        <p style="font-size: 0.9rem; color: #ddd; margin-bottom: 10px;"><strong>Pillar:</strong> Innovation</p>
+        <p style="font-size: 0.9rem; color: #ddd; margin-bottom: 15px;"><strong>Core "What If?":</strong> What if a massive solar flare permanently wiped out all digital payments overnight, forcing a hyper-cashless society to revert back to physical currency?</p>
+        
+        <div style="font-size: 0.85rem; line-height: 1.6; color: #bbb; display: grid; gap: 12px;">
+            <div><strong style="color: var(--fire);">⚡ [IMMEDIATE IMPACT]:</strong> Total gridlock and immediate panic. People stranded at subway turnstiles because their phones can't scan QR codes to commute. Street food vendors can't sell breakfast, and grocery stores have to close their doors because they don't even have physical cash registers or paper money on the premises.</div>
+            <div><strong style="color: var(--fire);">🏛️ [SOCIETAL RIPPLE]:</strong> Physical, tangible objects become the new bedrock of trust. The government has to rapidly print emergency paper currency, but a thriving underground barter system has already taken over, where people trade physical goods like rare pre-flare tech components, coffee, and physical books. "Unplugged" communities become highly sought-after, safe havens because they were never reliant on the grid to begin with.</div>
+            <div><strong style="color: var(--fire);">👤 [HUMAN-SCALE STORY]:</strong> A 15-year-old student who has literally never touched paper money in their entire life has to navigate the black market. Their grandfather is sick, and the only person with the right medicine refuses to accept anything but a pristine, physical 1990s plastic holographic trading card. The student has to sneak into the abandoned, overgrown tech-district to scavenge for it.</div>
+        </div>
+    </div>
+
+    <hr style="border-color: #333; margin-bottom: 25px;">
     <hr style="border-color: #333; margin-bottom: 25px;">
 
     <!-- 1. Select Pillar -->
@@ -385,6 +402,20 @@
         a.download = `SpecFic_Inquiry_${pillar}.txt`;
         a.click();
         URL.revokeObjectURL(url);
+    }
+    // Handles opening and closing the model sample box
+    function toggleSampleBox() {
+        const box = document.getElementById('model-sample-box');
+        const btn = document.getElementById('toggle-sample-btn');
+        
+        if (box.style.display === 'none') {
+            box.style.display = 'block';
+            btn.innerText = "❌ Hide Model Student Sample";
+            box.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            box.style.display = 'none';
+            btn.innerText = "💡 View Model Student Sample (High-Detail Target)";
+        }
     }
 </script>
 
